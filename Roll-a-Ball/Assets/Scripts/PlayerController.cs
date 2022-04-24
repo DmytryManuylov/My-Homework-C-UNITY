@@ -5,32 +5,32 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 0;
+   [SerializeField] private float _speed = 20;
 
-    private Rigidbody rb;
+    private Rigidbody _rb;
 
-    private float movementX;
-    private float movementY;
+    private float _movementX;
+    private float _movementY;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        _rb = GetComponent<Rigidbody>();
     }
 
     private void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
 
-        movementX = movementVector.x;
-        movementY = movementVector.y;
+        _movementX = movementVector.x;
+        _movementY = movementVector.y;
     }
 
     private void FixedUpdate()
     {
-        Vector3 movement = new Vector3(-movementX, 0.0f, -movementY);
+        Vector3 movement = new Vector3(_movementX, 0.0f, _movementY);
 
-        rb.AddForce(movement * speed);
+        _rb.AddForce(movement * _speed);
     }
 
 }
