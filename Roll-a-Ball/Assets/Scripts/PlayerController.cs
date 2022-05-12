@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,17 +21,25 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI Multi;
     public int Multiplier = 1;
     public GameObject All;
+    public Vector3 offset;
+    public GameObject Camera;
 
-
-                //Start
+    //Start
     void Start()
     {
-            
+        
         _rb = GetComponent<Rigidbody>();
         _count = 0;
         SetCountText();
+        
     }
-        //Movement vector
+    IEnumerator Next()
+    {
+        yield return new WaitForSeconds(20.0f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+
+    }
+    //Movement vector
     private void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
@@ -58,7 +67,7 @@ public class PlayerController : MonoBehaviour
             SetCountText();
         }
         //Unlocks hidden bonuses x10 if ordinary collected
-        if (other.gameObject.CompareTag("NonCollectable") && _count >= 145)
+        if (other.gameObject.CompareTag("NonCollectable") && _count >= 100)
         {
             other.gameObject.SetActive(false);
             Multiplier = 10;
@@ -66,21 +75,24 @@ public class PlayerController : MonoBehaviour
             SetCountText();
         }
         
-            //Finish 
-            if (other.gameObject.CompareTag("Finish"))
+        //Finish 
+        if (other.gameObject.CompareTag("Finish"))
         {
+            StartCoroutine(Next());
             All.gameObject.SetActive(false);
             _unlockedText.SetActive(false);
             _goToExitText.SetActive(false);
             Multi.text = "";
             _finishTextObject.SetActive(true);
+            
+
         }
+       
     }
+    
 
 
-
-
-         //Text set up
+    //Text set up
     void SetCountText()
     {
         Multiplier = 1;
@@ -108,7 +120,7 @@ public class PlayerController : MonoBehaviour
             HiddenWall.SetActive(false);
             _goToExitText.SetActive(true); //exit opened text
         }
-        if (_count >= 1000)
+        if (_count >= 700)
         {
             Multiplier = 1000;
             Multi.text = "Multiplier x" + Multiplier.ToString();
@@ -121,6 +133,9 @@ public class PlayerController : MonoBehaviour
     }  
                   
 }
+
+
+
 
 
 

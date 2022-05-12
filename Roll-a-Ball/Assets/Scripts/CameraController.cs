@@ -8,18 +8,18 @@ using UnityEngine;
     public class CameraController : MonoBehaviour
     {
         [SerializeField] private GameObject _player;
-        private Vector3 _offset;
+        public Vector3 offset;
 
         void Start()
         {
-            _offset = transform.position - _player.transform.position;
-            _offset.y = 2.7f;
-            _offset.z = -1.45f;
+            offset = transform.position - _player.transform.position;
+            offset.y = 2.7f;
+            offset.z = -1.45f;
         }
             
         void LateUpdate()
         {
-            transform.position = _player.transform.position + _offset;
+            transform.position = _player.transform.position + offset;
         }
 
     }
