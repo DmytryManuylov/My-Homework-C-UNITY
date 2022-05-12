@@ -9,6 +9,10 @@ TagManager:
   - PickUp
   - NonCollectable
   - HiddenWall
+  - Light
+  - Box
+  - Door
+  - Button
   layers:
   - Default
   - TransparentFX

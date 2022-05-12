@@ -7,26 +7,30 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float _speed = 20;
-    public TextMeshProUGUI countText;
-    public GameObject winTextObject;
-    public GameObject collectedText;
-    public GameObject goText;
-    private int _count;
+    [SerializeField] private TextMeshProUGUI _scoreText;
+    [SerializeField] private GameObject _finishTextObject;
+    [SerializeField] private GameObject _unlockedText;
+    [SerializeField] private GameObject _goToExitText;
+    [SerializeField] private int _count = 0;
     private Rigidbody _rb;
     private float _movementX;
     private float _movementY;
-    public GameObject HiddenWall;
 
+    public GameObject HiddenWall;
+    public TextMeshProUGUI Multi;
+    public int Multiplier = 1;
+    public GameObject All;
+
+
+                //Start
     void Start()
     {
+            
         _rb = GetComponent<Rigidbody>();
         _count = 0;
         SetCountText();
-        winTextObject.SetActive(false);
-        collectedText.SetActive(false);
-        goText.SetActive(false);
     }
-
+        //Movement vector
     private void OnMove(InputValue movementValue)
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
@@ -34,7 +38,8 @@ public class PlayerController : MonoBehaviour
         _movementX = movementVector.x;
         _movementY = movementVector.y;
     }
-
+                      
+        //Physics
     private void FixedUpdate()
     {
         Vector3 movement = new Vector3(_movementX, 0.0f, _movementY);
@@ -42,56 +47,79 @@ public class PlayerController : MonoBehaviour
         _rb.AddForce(movement * _speed);
     }
 
-    //PickUps
+        //Triggers
     private void OnTriggerEnter(Collider other)
-    {
+    {  
+        //PickUps
         if (other.gameObject.CompareTag("PickUp"))
         {
             other.gameObject.SetActive(false);
-            _count = _count + 1;
+            _count = _count + 1 * Multiplier;
             SetCountText();
         }
-        //wincondition
-        if (other.gameObject.CompareTag("Finish") && _count >= 165)
-        {
-
-            winTextObject.SetActive(true);
-            goText.SetActive(false); 
-            countText.text = "";
-        }
-        //hidden bonuses
+        //Unlocks hidden bonuses x10 if ordinary collected
         if (other.gameObject.CompareTag("NonCollectable") && _count >= 145)
         {
             other.gameObject.SetActive(false);
-            _count = _count + 1;
+            Multiplier = 10;
+            _count = _count + 1 * Multiplier;
             SetCountText();
         }
-        if (_count >= 160)
+        
+            //Finish 
+            if (other.gameObject.CompareTag("Finish"))
         {
-            goText.SetActive(true);
-            countText.text = "COLLECTED ULTRA!!!: " + _count.ToString();
-            collectedText.SetActive(false);
-            HiddenWall.GetComponent<MeshRenderer>().enabled = false;
+            All.gameObject.SetActive(false);
+            _unlockedText.SetActive(false);
+            _goToExitText.SetActive(false);
+            Multi.text = "";
+            _finishTextObject.SetActive(true);
         }
-        
-        
-
     }
 
+
+
+
+         //Text set up
     void SetCountText()
     {
-        countText.text = "COLLECTED: " + _count.ToString();
+        Multiplier = 1;
+        Multi.text = "Multiplier x" + Multiplier.ToString();//multi set
+        _scoreText.text = "COLLECTED: " + _count.ToString();//score set
+        _finishTextObject.SetActive(false);
+        _unlockedText.SetActive(false);
+        _goToExitText.SetActive(false);
 
-        
-        if (_count >= 145)
+        if (_count >= 100) // unlock hidden pickups x10
         {
-            collectedText.SetActive(true);
-            countText.text = "COLLECTED EXTRA!: " + _count.ToString();
+            
+            Multiplier = 10;
+            Multi.text = "Multiplier x" + Multiplier.ToString();
+            _scoreText.text = "EXTRA COLLECTED: " + _count.ToString();
+            _unlockedText.SetActive(true); //enable hint text
         }
+        if (_count >= 300) // collect unlockes and  opens an exit
+        {
+            
+            Multiplier = 100;
+            Multi.text = "Multiplier x" + Multiplier.ToString();
+            _scoreText.text = "ULTRA COLLECTED: " + _count.ToString();
+            _unlockedText.SetActive(false);
+            HiddenWall.SetActive(false);
+            _goToExitText.SetActive(true); //exit opened text
+        }
+        if (_count >= 1000)
+        {
+            Multiplier = 1000;
+            Multi.text = "Multiplier x" + Multiplier.ToString();
+            _scoreText.text = "MEGABONUS: " + _count.ToString(); ;
+            _goToExitText.SetActive(false);
+            
 
-
-    }
-
+        }
+        
+    }  
+                  
 }
 
 
