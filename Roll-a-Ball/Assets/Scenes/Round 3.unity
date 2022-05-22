@@ -1857,8 +1857,7 @@ MonoBehaviour:
   Multi: {fileID: 946613315}
   Multiplier: 1
   All: {fileID: 48798566}
-  offset: {x: 0, y: 0, z: 0}
-  Camera: {fileID: 0}
+  whiteBlocks: {fileID: 59999489}
 --- !u!114 &1491175290
 MonoBehaviour:
   m_ObjectHideFlags: 0

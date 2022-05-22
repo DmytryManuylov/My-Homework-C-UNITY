@@ -21,16 +21,14 @@ public class PlayerController : MonoBehaviour
     public TextMeshProUGUI Multi;
     public int Multiplier = 1;
     public GameObject All;
-    public Vector3 offset;
-    public GameObject Camera;
-
+    public GameObject whiteBlocks;
     //Start
     void Start()
     {
-        
+        whiteBlocks.SetActive(false); // hidden blocks off
         _rb = GetComponent<Rigidbody>();
         _count = 0;
-        SetCountText();
+        SetText();
         
     }
     IEnumerator Next()
@@ -63,39 +61,60 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("PickUp"))
         {
             other.gameObject.SetActive(false);
-            _count = _count + 1 * Multiplier;
-            SetCountText();
+            
+            SetCount();
+            SetText();
+            SetMultiplier();
         }
-        //Unlocks hidden bonuses x10 if ordinary collected
+        //Unlocks hidden bonuses x10 if ordinary collected > 100
         if (other.gameObject.CompareTag("NonCollectable") && _count >= 100)
         {
             other.gameObject.SetActive(false);
-            Multiplier = 10;
-            _count = _count + 1 * Multiplier;
-            SetCountText();
+            
+            SetCount();
+            SetText();
+            SetMultiplier();
         }
         
         //Finish 
         if (other.gameObject.CompareTag("Finish"))
         {
             StartCoroutine(Next());
+            SetCount();
+            SetMultiplier();
             All.gameObject.SetActive(false);
             _unlockedText.SetActive(false);
             _goToExitText.SetActive(false);
-            Multi.text = "";
+            Multi.text = "Multiplier x" + Multiplier.ToString();
             _finishTextObject.SetActive(true);
             
 
         }
        
     }
-    
-
-
-    //Text set up
-    void SetCountText()
+            //Methods
+    void SetMultiplier()
     {
-        Multiplier = 1;
+        if (_count >= 0 && _count <= 100)
+        {
+            Multiplier = 1;
+        }
+        if (_count >= 100 && _count <= 300)
+        {
+            Multiplier = 10;
+        }
+        else if (_count >= 300 && _count <= 700)
+        {
+            Multiplier = 100;
+        }
+        else if (_count >= 700 && _count <= 1000)
+        {
+            Multiplier = 1000;
+        }
+    }
+    void SetText()
+    {
+       
         Multi.text = "Multiplier x" + Multiplier.ToString();//multi set
         _scoreText.text = "COLLECTED: " + _count.ToString();//score set
         _finishTextObject.SetActive(false);
@@ -104,16 +123,14 @@ public class PlayerController : MonoBehaviour
 
         if (_count >= 100) // unlock hidden pickups x10
         {
-            
-            Multiplier = 10;
+            whiteBlocks.SetActive(true);
             Multi.text = "Multiplier x" + Multiplier.ToString();
             _scoreText.text = "EXTRA COLLECTED: " + _count.ToString();
             _unlockedText.SetActive(true); //enable hint text
+            
         }
         if (_count >= 300) // collect unlockes and  opens an exit
         {
-            
-            Multiplier = 100;
             Multi.text = "Multiplier x" + Multiplier.ToString();
             _scoreText.text = "ULTRA COLLECTED: " + _count.ToString();
             _unlockedText.SetActive(false);
@@ -122,16 +139,18 @@ public class PlayerController : MonoBehaviour
         }
         if (_count >= 700)
         {
-            Multiplier = 1000;
             Multi.text = "Multiplier x" + Multiplier.ToString();
             _scoreText.text = "MEGABONUS: " + _count.ToString(); ;
             _goToExitText.SetActive(false);
-            
-
         }
         
+
+
     }  
-                  
+    void SetCount()
+    {
+        _count = _count + 1 * Multiplier;
+    }
 }
 
 
