@@ -13,6 +13,8 @@ public class CameraFollow : MonoBehaviour
     void Start()
     {
         _player = GameObject.FindWithTag("Player").transform;//»щем объект с тегом »грок и складываем его компонент трансформ в переменную
+        Debug.Log("The selected index: " + GameManager.instance.CharIndex);
+
     }
 
     
